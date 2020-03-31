@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="referrer" content="no-referrer">
+    <meta name="referrer" content="never">
+    <script type="text/javascript" src="a01_files/jquery.js"></script>
+    <title>添加客服下单立减20</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+        .content{
+            width: 100%;
+            padding-bottom: 32px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            position: relative;
+        }
+        .content img{
+            max-width: 100%;
+        }
+        .code-img{
+            width: 100%;
+            text-align: center;
+        }
+        .code-img img{
+            max-width: 100%;
+        }
+        .header{
+            width: 100%;
+            height: 26px;
+            line-height: 26px;
+            position: fixed;
+            top: 0;
+            color: #01b90d;
+            box-sizing: border-box;
+            background: rgba(0,0,0,.8);
+            z-index: 10;
+            font-size: 12px;
+            padding: 0 12px;
+        }
+        .buy-list{
+            width: 100%;
+            padding-left: 4%;
+            box-sizing: border-box;
+            height: 120px;
+            position: fixed;
+            top: 40px;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0);
+            z-index: 10;
+            overflow: hidden;
+        }
+        .buy-list .buy-list-wrap{
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .buy-list-wrap .buy-item{
+            display: none;
+            height: 32px;
+            padding: 10px 0;
+            position: absolute;
+        }
+        .buy-list-wrap .active-out{
+            animation: active_out .5s linear 1 normal;
+            animation-fill-mode: forwards;
+            display: block;
+        }
+        .buy-list-wrap .active-before{
+            animation: active_before .5s linear 1 normal;
+            animation-fill-mode: forwards;
+            display: block;
+        }
+        .buy-list-wrap .active{
+            animation: active .5s linear 1 normal;
+            animation-fill-mode: forwards;
+            display: block;
+        }
+        @-webkit-keyframes active_out {
+            from{
+                position: absolute;
+                top: 16px;
+                opacity: 1;
+            }
+            to{
+                opacity: 0;
+                position: absolute;
+                top: -32px;
+            }
+        }
+        @keyframes active_out {
+            from{
+                top: 16px;
+                left: 0;
+                opacity: 1;
+            }
+            to{
+                opacity: 0;
+                top: -32px;
+                left: 0;
+            }
+        }
+        @-webkit-keyframes active_before {
+            from{
+                top: 68px;
+                left: 0;
+            }
+            to{
+                top: 16px;
+                left: 0;
+            }
+        }
+        @keyframes active_before {
+            from{
+                top: 68px;
+                left: 0;
+            }
+            to{
+                top: 16px;
+                left: 0;
+            }
+        }
+        @-webkit-keyframes active {
+            from{
+                top: 68px;
+                left: -50%;
+            }
+            to{
+                top: 68px;
+                left:0;
+            }
+        }
+        @keyframes active {
+            from{
+                top: 68px;
+                left: -50%;
+            }
+            to{
+                top: 68px;
+                left:0;
+            }
+        }
+        .buy-item .buy-item-wrap{
+            height: 24px;
+            padding: 4px 5px;
+            display: inline-block;
+            background-color: rgba(0, 0, 0, 0.53);
+            border-radius: 16px;
+        }
+        .buy-item-wrap img{
+            width: 22px;
+            height: 22px;
+            border-radius: 12px;
+            border: 1px solid #ffffff;
+        }
+        .buy-item-wrap span{
+            height: 24px;
+            line-height: 24px;
+            display: inline-block;
+            vertical-align: top;
+            font-size: 12px;
+            margin-left: 6px;
+            margin-right: 6px;
+            color: #ffffff;
+        }
+        .header .icon{
+            margin-right: 7px;
+            float: left;
+            margin-top: 5px;
+            height: 16px;
+            width: 16px;
+            background-image: url("/static/wechat/images/security.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .header .close{
+            float: right;
+            margin-top: 7px;
+            margin-right: 10px;
+            color: #cccccc;
+            height: 12px;
+            width: 12px;
+            background-image: url("/static/wechat/images/close.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .footer{
+            width: 100%;
+            height: 32px;
+            line-height: 32px;
+            background: #ce3426;
+            font-size: 12px;
+            color: #ffffff;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            text-align: center;
+            box-shadow: -5px -5px 10px #eee;
+            z-index: 100;
+        }
+        #minute,#second{
+            display: inline-block;
+            padding: 0 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span class="icon"></span>
+        <span class="text">此二维码已通过安全验证，可以放心扫码</span>
+        <span class="close"></span>
+    </div>
+    <div class="buy-list">
+        <div class="buy-list-wrap">
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_004.jpg" alt="">
+                    <span class="">禹**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_015.jpg" alt="">
+                    <span class="">a**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_018.jpg" alt="">
+                    <span class="">早**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/132_004.jpg" alt="">
+                    <span class="">°**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_023.jpg" alt="">
+                    <span class="">E**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_009.jpg" alt="">
+                    <span class="">👣**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_021.jpg" alt="">
+                    <span class="">一**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_008.jpg" alt="">
+                    <span class="">宝**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_003.jpg" alt="">
+                    <span class="">暖**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/132_003.jpg" alt="">
+                    <span class="">琳**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96.jpg" alt="">
+                    <span class="">白**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/132_002.jpg" alt="">
+                    <span class="">d**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_002.jpg" alt="">
+                    <span class="">美**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_017.jpg" alt="">
+                    <span class="">周**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_010.jpg" alt="">
+                    <span class="">白**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_025.jpg" alt="">
+                    <span class="">玻**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_013.jpg" alt="">
+                    <span class="">薇**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_005.jpg" alt="">
+                    <span class="">静**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_022.jpg" alt="">
+                    <span class="">穷**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item active-out">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_020.jpg" alt="">
+                    <span class="">安**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item active-before">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_016.jpg" alt="">
+                    <span class="">月**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item active">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_011.jpg" alt="">
+                    <span class="">张**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/132.jpg" alt="">
+                    <span class="">露**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_006.jpg" alt="">
+                    <span class="">欧**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_007.jpg" alt="">
+                    <span class="">蝶**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_019.jpg" alt="">
+                    <span class="">隆**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_014.jpg" alt="">
+                    <span class="">ヅ**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_026.jpg" alt="">
+                    <span class="">A**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_024.jpg" alt="">
+                    <span class="">经**&nbsp;&nbsp;已通过咨询成功下单</span>
+                </div>
+            </div>
+                        <div class="buy-item">
+                <div class="buy-item-wrap">
+                    <img src="a01_files/96_012.jpg" alt="">
+                    <span class="">S**&nbsp;&nbsp;已扫描二维码咨询</span>
+                </div>
+            </div>
+                    </div>
+    </div>
+    <div class="content">
+        <div class="detail"><p><span style="color: rgb(255, 0, 0);"><br></span></p><p><span style="color: rgb(255, 0, 0);"><br></span></p><p style="text-align: center;"><span style="color: rgb(255, 0, 0); font-size: 18px;">↓↓↓长按下方二维码识别添加即可购买↓↓↓</span></p><p></p><p class="code-img"><img src="a01_files/1584925765_69992.jpg" alt=""></p><br><p></p></div>
+    </div>
+    <div class="footer">
+        <p>优惠剩余时间：<span id="minute">05</span>分<span id="second">42</span>秒</p>
+    </div>
+
+<script type="text/javascript">
+    var second = 0;
+    $(function(){
+       $(".close").click(function () {
+           $(".header").hide();
+       });
+
+       // 定时数据
+       setInterval(function () {
+           // 列表渲染
+           let active_obj =  $(".active");
+           let before_obj = $(".active-before");
+           let out_obj =  $(".active-out");
+           let i_obj = $(".active + .buy-item");
+           if (i_obj.length === 0){
+               $(".buy-item:first-child").addClass('active');
+           } else{
+               i_obj.addClass('active');
+           }
+           active_obj.removeClass('active').addClass('active-before');
+           before_obj.removeClass('active-before').addClass('active-out');
+           out_obj.removeClass('active-out');
+       },2000);
+
+       // 倒计时
+        setInterval(function () {
+            show_time(false);
+        },1000);
+
+        show_time(true);
+    });
+
+    // 倒计时
+    function show_time(init) {
+        if (init === true){
+            second = randNum(300,480);
+        }
+        if (second>=0){
+            let minute_str = '0'+Math.floor(second/60);
+            let second_str = second%60;
+            if (second_str<10){
+                second_str = '0'+second_str;
+            }
+            $("#minute").text(minute_str);
+            $("#second").text(second_str);
+            second--;
+        }
+    }
+
+    // 生成随机数据
+    function randNum(min,max) {
+        return min+Math.round(Math.random()*(max-min));
+    }
+</script>
+</body></html>
